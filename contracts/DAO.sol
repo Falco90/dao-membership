@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "hardhat/console.sol";
 
-interface IBadgeInterface {
-    function updateURI(address) external;
+interface IBadge {
+    function updateTokenURI(address, uint256) external;
 }
 
 contract BountyHunterDAO is ReentrancyGuard {
@@ -17,8 +17,7 @@ contract BountyHunterDAO is ReentrancyGuard {
     Counters.Counter private contractsCompleted;
     Counters.Counter private playerIds;
     address public sheriff;
-    uint256[] promotionLevels;
-    Player[] players;
+    Promotion[] promotions;
 
     struct Contract {
         uint256 contractId;
@@ -28,6 +27,12 @@ contract BountyHunterDAO is ReentrancyGuard {
         bool completed;
         address completedBy;
         address owner;
+    }
+
+    struct Promotion {
+        uint256 level;
+        uint256 contractsRequired;
+        uint256 bonus;
     }
 
     mapping(uint256 => Contract) private idToContract;
@@ -58,21 +63,19 @@ contract BountyHunterDAO is ReentrancyGuard {
         return addressToPlayer[_address];
     }
 
-    constructor(uint256[] memory _promotionLevels) payable {
+    constructor(Promotion[] memory _promotions) payable {
         sheriff = msg.sender;
-        promotionLevels = _promotionLevels;
+        for (uint256 i = 0; i < _promotions.length; i++) {
+            promotions.push(_promotions[i]);
+        }
     }
 
-    // function claimPromotion(uint256 _level) public {
-    //     require(addressToBountyHunter[msg.sender].contractsCompleted >= promotionLevels[_level]);
-    // }
-
-    function fetchPromotionLevels() public view returns (uint256[] memory) {
-        return promotionLevels;
+    function fetchPromotions() public view returns (Promotion[] memory) {
+        return promotions;
     }
 
     function fetchPlayers() public view returns (Player[] memory) {
-        return players;
+        // return players;
     }
 
     function createContract(
@@ -117,6 +120,7 @@ contract BountyHunterDAO is ReentrancyGuard {
         address player = msg.sender;
         uint256 reward = idToContract[_contractId].reward;
         uint256 tokenId = idToContract[_contractId].tokenId;
+        
         require(IERC20(_erc20contract).balanceOf(address(this)) >= reward);
         idToContract[_contractId].completedBy = msg.sender;
         IERC721(_nftContract).transferFrom(address(this), msg.sender, tokenId);
@@ -128,18 +132,28 @@ contract BountyHunterDAO is ReentrancyGuard {
         addressToPlayer[msg.sender].totalRewardsEarned += reward;
         addressToPlayer[msg.sender].contractsCompleted++;
 
-        if (addressToPlayer[msg.sender].contractsCompleted == 0) {
-            playerIds.increment();
-            addressToPlayer[msg.sender].playerId = playerIds.current();
-            players.push(addressToPlayer[msg.sender]);
-        }
-        if (IERC721(_badgeContract).balanceOf(player) == 1) {
-            updateBadge(_badgeContract, player);
+        //check if player is eligible for promotion
+        for (uint256 i = 0; i < promotions.length; i++) {
+            if (
+                addressToPlayer[msg.sender].contractsCompleted ==
+                promotions[i].contractsRequired
+            ) {
+                promotePlayer(_badgeContract, _erc20contract, player, i);
+            }
         }
     }
 
-    function updateBadge(address _badgeContract, address _player) private {
-        IBadgeInterface(_badgeContract).updateURI(_player);
+    function promotePlayer(
+        address _badgeContract,
+        address _erc20contract,
+        address _player,
+        uint256 _index
+    ) private {
+        IERC20(_erc20contract).transfer(
+            _player,
+            promotions[_index].bonus * 10**18
+        );
+        IBadge(_badgeContract).updateTokenURI(_player, _index);
     }
 
     function fetchContracts() public view returns (Contract[] memory) {

@@ -100,10 +100,10 @@ const Profile = () => {
     <Box>
       {isLoading == false && playerData ? (
         <Box>
-        {/* <p>Player ID: {playerData.playerId.toString()}</p>
+        <p>Player ID: {playerData.playerId.toString()}</p>
         <p>Contracts completed: {playerData.contractsCompleted.toString()}</p>
         <p>Total rewards earned: {playerData.totalRewardsEarned.toString()}</p>
-        <p>Amount of contracts to complete until next promotion: </p> */}
+        <p>Amount of contracts to complete until next promotion: </p>
         <Button onClick={claimBadge}> Claim Badge</Button>
         </Box>
       )

@@ -10,6 +10,8 @@ import "hardhat/console.sol";
 
 interface IDaoContractInterface {
     function fetchPlayerData(address) external view returns (Player memory);
+
+    function fetchPromotions() external view returns (Promotion[] memory);
 }
 
 struct Player {
@@ -18,27 +20,23 @@ struct Player {
     uint256 totalRewardsEarned;
 }
 
+struct Promotion {
+    uint256 level;
+    uint256 contractsRequired;
+    uint256 bonus;
+}
+
 contract Badge is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private tokenIds;
     address contractAddress;
-    string bronzeURI;
-    string silverURI;
-    string goldURI;
-    uint256[] promotionLevels;
+    string[] tokenURIs;
 
-    constructor(
-        address _contractAddress,
-        string memory _bronzeURI,
-        string memory _silverURI,
-        string memory _goldURI,
-        uint256[] memory _promotionLevels
-    ) ERC721("Badge", "BADGE") {
+    constructor(address _contractAddress, string[] memory _tokenURIs)
+        ERC721("Badge", "BADGE")
+    {
         contractAddress = _contractAddress;
-        promotionLevels = _promotionLevels;
-        setBronzeURI(_bronzeURI);
-        setSilverURI(_silverURI);
-        setGoldURI(_goldURI);
+        tokenURIs = _tokenURIs;
     }
 
     mapping(address => uint256) addressToTokenId;
@@ -48,39 +46,31 @@ contract Badge is ERC721URIStorage, Ownable {
         Player memory player = IDaoContractInterface(contractAddress)
             .fetchPlayerData(msg.sender);
 
-        console.log(player.playerId, player.contractsCompleted, player.totalRewardsEarned);
+        console.log(
+            player.playerId,
+            player.contractsCompleted,
+            player.totalRewardsEarned
+        );
         require(
-            player.contractsCompleted >= promotionLevels[0],
-            "Not enough contracts completed"
+            player.contractsCompleted >= 1,
+            "A player must atleast complete one contract to earn a badge"
         );
         tokenIds.increment();
         uint256 newItemId = tokenIds.current();
         _mint(msg.sender, newItemId);
         addressToTokenId[msg.sender] = newItemId;
-        _setTokenURI(newItemId, bronzeURI);
+        _setTokenURI(newItemId, tokenURIs[0]);
     }
 
-    function updateURI(address _player) public {
+    function updateTokenURI(address _player, uint256 _index) public {
         uint256 contractsCompleted = IDaoContractInterface(contractAddress)
-            .fetchPlayerData(_player).contractsCompleted;
-        uint256 tokenId = addressToTokenId[_player];    
-        if (contractsCompleted >= promotionLevels[2]) {
-            _setTokenURI(tokenId, goldURI);
-        } else if (contractsCompleted >= promotionLevels[1]) {
-            _setTokenURI(tokenId, silverURI);
-        }
+            .fetchPlayerData(_player)
+            .contractsCompleted;
+        uint256 contractsRequired = IDaoContractInterface(contractAddress)
+        .fetchPromotions()[_index].contractsRequired;
+        require(contractsCompleted >= contractsRequired);
+        uint256 tokenId = addressToTokenId[_player];
+        _setTokenURI(tokenId, tokenURIs[_index]);
         console.log("Latest tokenURI: ", tokenURI(tokenId));
-    }
-
-    function setBronzeURI(string memory _bronzeURI) public onlyOwner {
-        bronzeURI = _bronzeURI;
-    }
-
-    function setSilverURI(string memory _silverURI) public onlyOwner {
-        silverURI = _silverURI;
-    }
-
-    function setGoldURI(string memory _goldURI) public onlyOwner {
-        goldURI = _goldURI;
     }
 }

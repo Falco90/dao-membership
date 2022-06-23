@@ -15,7 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const DAO = await hre.ethers.getContractFactory("BountyHunterDAO");
-  const dao = await DAO.deploy([1, 3, 5, 10, 25, 50, 100]);
+  const dao = await DAO.deploy([{level: 1, contractsRequired: 2, bonus: 20}, {level: 2, contractsRequired: 3, bonus: 30}, {level: 3, contractsRequired: 10, bonus: 40}]);
 
   await dao.deployed();
 
@@ -38,10 +38,11 @@ async function main() {
   const Badge = await hre.ethers.getContractFactory("Badge");
   const badge = await Badge.deploy(
     dao.address,
+    [
     "https://cdn5.vectorstock.com/i/1000x1000/81/09/modern-bronze-circle-metal-badges-labels-vector-16488109.jpg",
     "https://cdn.w600.comps.canstockphoto.com/awesome-silver-badge-with-blue-ribbon-image_csp33850773.jpg",
     "https://i.pinimg.com/736x/2d/ef/52/2def52596775ecbb7d98c8a400129570.jpg",
-    [1, 2, 3]
+    ]
   );
 
   await badge.deployed();
