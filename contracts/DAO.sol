@@ -15,9 +15,10 @@ contract BountyHunterDAO is ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private contractIds;
     Counters.Counter private contractsCompleted;
-    Counters.Counter private playerIds;
-    address public sheriff;
+    Counters.Counter public playerIds;
+    address public owner;
     Promotion[] promotions;
+    Player[] public players;
 
     struct Contract {
         uint256 contractId;
@@ -49,22 +50,29 @@ contract BountyHunterDAO is ReentrancyGuard {
 
     struct Player {
         uint256 playerId;
+        address playerAddress;
         uint256 contractsCompleted;
         uint256 totalRewardsEarned;
     }
 
-    mapping(address => Player) public addressToPlayer;
+    // mapping(address => Player) public addressToPlayer;
+
+    mapping(address => uint256) public addressToPlayerId;
+
+    mapping(uint256 => Player) public idToPlayer;
+
 
     function fetchPlayerData(address _address)
         public
         view
         returns (Player memory)
     {
-        return addressToPlayer[_address];
+        uint256 playerId = addressToPlayerId[_address];
+        return idToPlayer[playerId];
     }
 
-    constructor(Promotion[] memory _promotions) payable {
-        sheriff = msg.sender;
+    constructor(Promotion[] memory _promotions) {
+        owner = msg.sender;
         for (uint256 i = 0; i < _promotions.length; i++) {
             promotions.push(_promotions[i]);
         }
@@ -74,15 +82,11 @@ contract BountyHunterDAO is ReentrancyGuard {
         return promotions;
     }
 
-    function fetchPlayers() public view returns (Player[] memory) {
-        // return players;
-    }
-
     function createContract(
         address _nftContract,
         uint256 _tokenId,
         uint256 _reward
-    ) public {
+    ) public onlyOwner {
         require(_reward > 0, "Reward must be greater than 0");
 
         contractIds.increment();
@@ -118,9 +122,13 @@ contract BountyHunterDAO is ReentrancyGuard {
         address _badgeContract
     ) public {
         address player = msg.sender;
+        if (addressToPlayerId[player] == 0) {
+            addNewPlayer(player);
+        }
+        uint256 playerId = addressToPlayerId[player];
         uint256 reward = idToContract[_contractId].reward;
         uint256 tokenId = idToContract[_contractId].tokenId;
-        
+
         require(IERC20(_erc20contract).balanceOf(address(this)) >= reward);
         idToContract[_contractId].completedBy = msg.sender;
         IERC721(_nftContract).transferFrom(address(this), msg.sender, tokenId);
@@ -129,18 +137,39 @@ contract BountyHunterDAO is ReentrancyGuard {
         idToContract[_contractId].owner = msg.sender;
         idToContract[_contractId].completed = true;
         contractsCompleted.increment();
-        addressToPlayer[msg.sender].totalRewardsEarned += reward;
-        addressToPlayer[msg.sender].contractsCompleted++;
+        idToPlayer[playerId].totalRewardsEarned += reward;
+        idToPlayer[playerId].contractsCompleted++;
 
         //check if player is eligible for promotion
         for (uint256 i = 0; i < promotions.length; i++) {
             if (
-                addressToPlayer[msg.sender].contractsCompleted ==
+                idToPlayer[playerId].contractsCompleted ==
                 promotions[i].contractsRequired
             ) {
                 promotePlayer(_badgeContract, _erc20contract, player, i);
             }
         }
+    }
+
+    function addNewPlayer(address _player) private {
+        playerIds.increment();
+        uint256 newPlayerId = playerIds.current();
+        addressToPlayerId[_player] = newPlayerId;
+        idToPlayer[newPlayerId].playerId = newPlayerId;
+        idToPlayer[newPlayerId].playerAddress = _player;
+    }
+
+    function fetchPlayers() public view returns (Player[] memory) {
+        uint256 playerCount = playerIds.current();
+        uint256 currentIndex = 0;
+
+        Player[] memory _players = new Player[](playerCount);
+        for (uint256 i = 0; i < playerCount; i++) {
+            Player storage currentPlayer = idToPlayer[i + 1];
+            _players[currentIndex] = currentPlayer;
+            currentIndex++;
+        }
+        return _players;
     }
 
     function promotePlayer(
@@ -220,5 +249,10 @@ contract BountyHunterDAO is ReentrancyGuard {
             }
         }
         return contracts;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner, "This can only be called by the owner/gamemaster");
+        _;
     }
 }

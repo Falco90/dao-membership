@@ -15,7 +15,11 @@ async function main() {
 
   // We get the contract to deploy
   const DAO = await hre.ethers.getContractFactory("BountyHunterDAO");
-  const dao = await DAO.deploy([{level: 1, contractsRequired: 2, bonus: 20}, {level: 2, contractsRequired: 3, bonus: 30}, {level: 3, contractsRequired: 10, bonus: 40}]);
+  const dao = await DAO.deploy([
+    { level: 1, contractsRequired: 2, bonus: 20 },
+    { level: 2, contractsRequired: 3, bonus: 30 },
+    { level: 3, contractsRequired: 10, bonus: 40 },
+  ]);
 
   await dao.deployed();
 
@@ -36,14 +40,10 @@ async function main() {
   console.log("Contract ERC20 deployed to:", erc20.address);
 
   const Badge = await hre.ethers.getContractFactory("Badge");
-  const badge = await Badge.deploy(
-    dao.address,
-    [
-    "https://cdn5.vectorstock.com/i/1000x1000/81/09/modern-bronze-circle-metal-badges-labels-vector-16488109.jpg",
-    "https://cdn.w600.comps.canstockphoto.com/awesome-silver-badge-with-blue-ribbon-image_csp33850773.jpg",
-    "https://i.pinimg.com/736x/2d/ef/52/2def52596775ecbb7d98c8a400129570.jpg",
-    ]
-  );
+  const badge = await Badge.deploy(dao.address, [
+    "https://bafybeif7paugung5dmodjz3bhy3zjf4jugp6m366ook45hrp6rb35hdkju.ipfs.infura-ipfs.io/",
+    "https://bafybeicznunnpif34csub2dsqhw7bbnu3stcb3mfl5ysdsebiubwb6q7f4.ipfs.infura-ipfs.io/",
+  ]);
 
   await badge.deployed();
 

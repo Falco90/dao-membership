@@ -115,7 +115,7 @@ const Admin = () => {
   return (
     <Container>
       <Heading>Sheriff's office</Heading>
-      <Heading>{balance ? balance.toString() : ""}</Heading>
+      <Heading size="md">Treasury: {balance ? balance.toString().slice(0, -18) : ""}</Heading>
       <Stack spacing={3} mt={5}>
         <FormLabel>Create Contract</FormLabel>
         <Input

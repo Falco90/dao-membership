@@ -21,6 +21,7 @@ import Web3Modal from "web3modal";
 const ContractDetails = (props) => {
   const router = useRouter();
   const currentContract = router.query;
+  console.log(currentContract);
 
   async function completeContract() {
     const web3Modal = new Web3Modal();
@@ -68,27 +69,19 @@ const ContractDetails = (props) => {
             <Tr>
               <Td>Status:</Td>
               <Td>
-                {currentContract.completed == true
-                  ? "Completed"
-                  : "Not Completed"}
+                {currentContract.completed === false ? "not completed" : "completed"}
               </Td>
             </Tr>
-            {currentContract.completed == true ? (
-              ""
-            ) : (
+            {currentContract.completed ? (
               <Tr>
                 <Td>Completed By:</Td>
                 <Td>{currentContract.completedBy}</Td>
               </Tr>
-            )}
+            ) : ""}
           </Tbody>
         </Table>
       </TableContainer>
-      {currentContract.completed == false ? (
-        ""
-      ) : (
         <Button onClick={completeContract}>Complete contract</Button>
-      )}
     </Stack>
   );
 };

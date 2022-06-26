@@ -14,7 +14,7 @@ const Card = forwardRef((props, ref) => {
       rounded="10px"
       overflow="hidden"
       boxShadow="lg"
-      bg="whiteAlpha.600"
+      bgGradient="linear(to-t, gray.100, gray.300)"
       border="2px" 
     >
       {completed == true ? (

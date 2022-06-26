@@ -62,6 +62,12 @@ contract Badge is ERC721URIStorage, Ownable {
         _setTokenURI(newItemId, tokenURIs[0]);
     }
 
+    function fetchMyBadge() public view returns (string memory) {
+        require(balanceOf(msg.sender) >= 1, "Must own a badge");
+        uint256 tokenId = addressToTokenId[msg.sender];
+        return tokenURI(tokenId);
+    }
+
     function updateTokenURI(address _player, uint256 _index) public {
         uint256 contractsCompleted = IDaoContractInterface(contractAddress)
             .fetchPlayerData(_player)

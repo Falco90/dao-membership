@@ -1,4 +1,13 @@
-import { Container, Box, Heading, Button, Text, Stack } from "@chakra-ui/react";
+import {
+  Container,
+  Box,
+  Heading,
+  Button,
+  Text,
+  Stack,
+  OrderedList,
+  ListItem,
+} from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -6,6 +15,7 @@ import { daoAddress, nftAddress } from "../config";
 import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
 import Contract from "../artifacts/contracts/Contract.sol/Contract.json";
 import Card from "../components/card";
+import Leaderboard from "../components/leaderboard";
 import Link from "next/link";
 
 export default function Home() {
@@ -15,7 +25,7 @@ export default function Home() {
   const [sheriff, setSheriff] = useState("");
 
   useEffect(() => {
-    fetchSheriff();
+    // fetchSheriff();
     fetchContracts();
     fetchPlayers();
   }, []);
@@ -29,19 +39,20 @@ export default function Home() {
     );
     const data = await daoContract.fetchPlayers();
     console.log(data);
-    setPlayers(data);
-  }
-
-  async function fetchSheriff() {
-    const provider = new ethers.providers.JsonRpcProvider();
-    const daoContract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      provider
-    );
-    const data = await daoContract.sheriff();
-    console.log(data);
-    setSheriff(data);
+    const _players = data.map((p) => {
+      let player = {
+        id: p.playerId.toNumber(),
+        address: p.playerAddress,
+        contractsCompleted: p.contractsCompleted.toNumber(),
+        totalRewardsEarned: ethers.utils.formatUnits(
+          p.totalRewardsEarned,
+          "ether"
+        ),
+      };
+      return player;
+    });
+    console.log(_players);
+    setPlayers(_players);
   }
 
   async function fetchContracts() {
@@ -57,6 +68,7 @@ export default function Home() {
       provider
     );
     const data = await daoContract.fetchContracts();
+    console.log(data);
 
     const _contracts = await Promise.all(
       data.map(async (i) => {
@@ -77,6 +89,7 @@ export default function Home() {
       })
     );
     setContracts(_contracts);
+    console.log(contracts);
     setIsLoading(false);
   }
 
@@ -92,11 +105,19 @@ export default function Home() {
           be rewarded handsomely. Report back to me for your bounty when you've
           captured one of the targets below.
           <br></br>
-          <br></br> The Sheriff ({isLoading == false && sheriff ? sheriff : ""})
+          <br></br> The Sheriff
         </Text>
       </Box>
-      <Stack p={5} mb={5} alignItems="center" rounded="10px" bg="whiteAlpha.600" >
-        <Heading size="md" mb={3}>Latest Contracts</Heading>
+      <Stack
+        p={5}
+        mb={5}
+        alignItems="center"
+        rounded="10px"
+        bg="whiteAlpha.600"
+      >
+        <Heading size="md" mb={3}>
+          Latest Contracts
+        </Heading>
         <Stack direction="row" spacing={3} my={5}>
           {isLoading == false && contracts.length > 0
             ? contracts.slice(-4).map((contract) => {
@@ -113,6 +134,7 @@ export default function Home() {
                       name={contract.name}
                       reward={contract.reward}
                       image={contract.image}
+                      completed={contract.completed}
                     ></Card>
                   </Link>
                 );
@@ -123,19 +145,7 @@ export default function Home() {
           <Button bg="orange">All Contracts</Button>
         </Link>
       </Stack>
-      <Stack alignItems="center" p={5}>
-        <Heading size="md">Bounty Hunter Leaderboard:</Heading>
-        {isLoading == false && players.length > 0
-          ? players.map((player) => {
-              return (
-                <Box>
-                  {/* <p>{player.contractsCompleted}</p>
-              <p>{player.totalRewardsEarned}</p> */}
-                </Box>
-              );
-            })
-          : ""}
-      </Stack>
+      <Leaderboard players={players} />
     </Box>
   );
 }
