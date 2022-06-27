@@ -30,7 +30,7 @@ const Leaderboard = (props) => {
               .map((player) => {
                 return (
                   <ListItem>
-                    <Text>{truncate(player.address)} ({player.totalRewardsEarned * 1})</Text>
+                    <Text>{truncate(player.address)} (${player.totalRewardsEarned * 1})</Text>
                   </ListItem>
                 );
               })}
