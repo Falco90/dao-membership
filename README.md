@@ -18,4 +18,4 @@ The mechanics demonstrated in this project can be applied to other settings as w
 4. After reaching certain milestones the badge gets upgraded and player receives bonuses
 
 #### Disclaimer:
-Placeholder badge images used are created by Skylark1952, downloaded from freepik.com. These images are used for demonstration/testing purposes only.
+Placeholder badge images used are created by Skylark1952, downloaded from freepik.com. These images are used for demonstration/testing purposes during development only.
