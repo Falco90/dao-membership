@@ -4,19 +4,17 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "hardhat/console.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IBadge {
     function updateTokenURI(address, uint256) external;
 }
 
-contract BountyHunterDAO is ReentrancyGuard {
+contract Game is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private contractIds;
     Counters.Counter private contractsCompleted;
     Counters.Counter public playerIds;
-    address public owner;
     Promotion[] promotions;
     Player[] public players;
 
@@ -55,12 +53,14 @@ contract BountyHunterDAO is ReentrancyGuard {
         uint256 totalRewardsEarned;
     }
 
-    // mapping(address => Player) public addressToPlayer;
-
     mapping(address => uint256) public addressToPlayerId;
-
     mapping(uint256 => Player) public idToPlayer;
 
+    constructor(Promotion[] memory _promotions) {
+        for (uint256 i = 0; i < _promotions.length; i++) {
+            promotions.push(_promotions[i]);
+        }
+    }
 
     function fetchPlayerData(address _address)
         public
@@ -71,12 +71,6 @@ contract BountyHunterDAO is ReentrancyGuard {
         return idToPlayer[playerId];
     }
 
-    constructor(Promotion[] memory _promotions) {
-        owner = msg.sender;
-        for (uint256 i = 0; i < _promotions.length; i++) {
-            promotions.push(_promotions[i]);
-        }
-    }
 
     function fetchPromotions() public view returns (Promotion[] memory) {
         return promotions;
@@ -140,7 +134,6 @@ contract BountyHunterDAO is ReentrancyGuard {
         idToPlayer[playerId].totalRewardsEarned += reward;
         idToPlayer[playerId].contractsCompleted++;
 
-        //check if player is eligible for promotion
         for (uint256 i = 0; i < promotions.length; i++) {
             if (
                 idToPlayer[playerId].contractsCompleted ==
@@ -249,10 +242,5 @@ contract BountyHunterDAO is ReentrancyGuard {
             }
         }
         return contracts;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner, "This can only be called by the owner/gamemaster");
-        _;
     }
 }

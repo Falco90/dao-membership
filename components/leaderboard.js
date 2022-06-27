@@ -12,7 +12,7 @@ const Leaderboard = (props) => {
             <Text>Contracts Completed</Text>
             <OrderedList>
               {players
-                .sort((a, b) => b.contractsCompleted - a.contractsCompleted)
+                .sort((a, b) => b.contractsCompleted - a.contractsCompleted).slice(0, 3)
                 .map((player) => {
                   return (
                     <ListItem>
@@ -26,11 +26,11 @@ const Leaderboard = (props) => {
             <Text>Total Rewards Earned</Text>
           <OrderedList>
             {players
-              .sort((a, b) => b.totalRewardsEarned - a.totalRewardsEarned)
+              .sort((a, b) => b.totalRewardsEarned - a.totalRewardsEarned).slice(0, 3)
               .map((player) => {
                 return (
                   <ListItem>
-                    <Text>{truncate(player.address)} ({player.totalRewardsEarned})</Text>
+                    <Text>{truncate(player.address)} ({player.totalRewardsEarned * 1})</Text>
                   </ListItem>
                 );
               })}

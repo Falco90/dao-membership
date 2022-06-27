@@ -12,15 +12,20 @@ import {
   Td,
   Th,
 } from "@chakra-ui/react";
-import { nftAddress, daoAddress, erc20Address, badgeAddress } from "../../config";
-import BountyHunterDAO from "../../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
+import {
+  nftAddress,
+  gameAddress,
+  erc20Address,
+  badgeAddress,
+} from "../../config";
+import Game from "../../artifacts/contracts/game.sol/Game.json";
+
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 
-const ContractDetails = (props) => {
+const ContractDetails = () => {
   const router = useRouter();
   const currentContract = router.query;
-  console.log(currentContract);
 
   async function completeContract() {
     const web3Modal = new Web3Modal();
@@ -28,11 +33,7 @@ const ContractDetails = (props) => {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
-    const contract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      signer
-    );
+    const contract = new ethers.Contract(gameAddress, Game.abi, signer);
     const transaction = await contract.completeContract(
       nftAddress,
       currentContract.tokenId,
@@ -40,6 +41,7 @@ const ContractDetails = (props) => {
       badgeAddress
     );
     await transaction.wait();
+    router.push("/profile");
   }
 
   return (
@@ -68,19 +70,27 @@ const ContractDetails = (props) => {
             <Tr>
               <Td>Status:</Td>
               <Td>
-                {currentContract.completed === false ? "not completed" : "completed"}
+                {currentContract.completed == "true"
+                  ? "Completed"
+                  : "Not Completed"}
               </Td>
             </Tr>
-            {currentContract.completed ? (
+            {currentContract.completed == "true" ? (
               <Tr>
                 <Td>Completed By:</Td>
                 <Td>{currentContract.completedBy}</Td>
               </Tr>
-            ) : ""}
+            ) : (
+              ""
+            )}
           </Tbody>
         </Table>
       </TableContainer>
+      {currentContract.completed == "false" ? (
         <Button onClick={completeContract}>Complete contract</Button>
+      ) : (
+        ""
+      )}
     </Stack>
   );
 };

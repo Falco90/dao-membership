@@ -14,7 +14,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
-import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
+import Game from "../artifacts/contracts/game.sol/Game.json";
 import NFT from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import ERC20 from "../artifacts/contracts/ERC20.sol/BountyHunterToken.json";
 import Web3Modal from "web3modal";
@@ -23,7 +23,7 @@ import { useRouter } from "next/router";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-import { nftAddress, daoAddress, erc20Address } from "../config";
+import { nftAddress, gameAddress, erc20Address } from "../config";
 
 const Admin = () => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -46,7 +46,7 @@ const Admin = () => {
       ERC20.abi,
       provider
     );
-    const data = await erc20Contract.balanceOf(daoAddress);
+    const data = await erc20Contract.balanceOf(gameAddress);
     console.log(data);
     setBalance(data);
   }
@@ -70,8 +70,8 @@ const Admin = () => {
     const { name, description, reward } = formInput;
     if (!name || !description || !reward || !fileUrl) return;
     const data = JSON.stringify({
-      name,
-      description,
+      name: name,
+      description: description,
       image: fileUrl,
     });
 
@@ -103,7 +103,7 @@ const Admin = () => {
 
     const reward = ethers.utils.parseUnits(formInput.reward, "ether");
 
-    contract = new ethers.Contract(daoAddress, BountyHunterDAO.abi, signer);
+    contract = new ethers.Contract(gameAddress, Game.abi, signer);
 
     transaction = await contract.createContract(nftAddress, tokenId, reward);
     console.log("contract created");

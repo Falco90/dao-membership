@@ -14,35 +14,36 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const DAO = await hre.ethers.getContractFactory("BountyHunterDAO");
-  const dao = await DAO.deploy([
-    { level: 1, contractsRequired: 2, bonus: 20 },
-    { level: 2, contractsRequired: 3, bonus: 30 },
-    { level: 3, contractsRequired: 10, bonus: 40 },
+  const Game = await hre.ethers.getContractFactory("Game");
+  const game = await Game.deploy([
+    { level: 1, contractsRequired: 2, bonus: 2000 },
+    { level: 2, contractsRequired: 3, bonus: 3000 },
+    { level: 3, contractsRequired: 10, bonus: 5000 },
   ]);
 
-  await dao.deployed();
+  await game.deployed();
 
-  console.log("Game contract deployed to:", dao.address);
+  console.log("Game contract deployed to:", game.address);
 
   const NFT = await hre.ethers.getContractFactory("Trophy");
-  const nft = await NFT.deploy(dao.address);
+  const nft = await NFT.deploy(game.address);
 
   await nft.deployed();
 
   console.log("NFT contract deployed to: ", nft.address);
 
   const ERC20 = await hre.ethers.getContractFactory("BountyHunterToken");
-  const erc20 = await ERC20.deploy(dao.address);
+  const erc20 = await ERC20.deploy(game.address);
 
   await erc20.deployed();
 
   console.log("ERC20 contract deployed to:", erc20.address);
 
   const Badge = await hre.ethers.getContractFactory("Badge");
-  const badge = await Badge.deploy(dao.address, [
-    "https://bafybeif7paugung5dmodjz3bhy3zjf4jugp6m366ook45hrp6rb35hdkju.ipfs.infura-ipfs.io/",
-    "https://bafybeicznunnpif34csub2dsqhw7bbnu3stcb3mfl5ysdsebiubwb6q7f4.ipfs.infura-ipfs.io/",
+  const badge = await Badge.deploy(game.address, [
+    "https://bafybeifgijnohkz6fqmpapuul6gkmchrfdofnm54bnt43syuwcesa2co2a.ipfs.infura-ipfs.io/",
+    "https://bafybeia6pgaxtpol6ntmrkgqsm3b6dtckbwjbcmtnrmu5aivinjz3gb4l4.ipfs.infura-ipfs.io/",
+    "https://bafybeieqqe7a3ru2v43u2hifoyehcnnlzzmkbkngg7yuoyzokn43364tgi.ipfs.infura-ipfs.io/",
   ]);
 
   await badge.deployed();

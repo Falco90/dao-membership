@@ -31,7 +31,7 @@ const Card = forwardRef((props, ref) => {
         <Text fontSize="18px" fontWeight="semibold">
           {name}
         </Text>
-        <Text fontWeight="semibold">${reward}</Text>
+        <Text fontWeight="semibold">${reward * 1}</Text>
       </VStack>
     </Box>
   );

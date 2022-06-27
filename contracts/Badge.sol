@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 interface IGame {
     function fetchPlayerData(address) external view returns (Player memory);
@@ -69,6 +68,6 @@ contract Badge is ERC721URIStorage, Ownable {
         .fetchPromotions()[_index].contractsRequired;
         require(contractsCompleted >= contractsRequired);
         uint256 tokenId = addressToTokenId[_player];
-        _setTokenURI(tokenId, tokenURIs[_index]);
+        _setTokenURI(tokenId, tokenURIs[_index + 1]);
     }
 }

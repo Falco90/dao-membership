@@ -1,20 +1,32 @@
-import { Box, Heading, Stack, Button, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Stack,
+  Button,
+  Image,
+  Text,
+  Flex,
+  Spacer,
+} from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ethers } from "ethers";
-import { nftAddress, daoAddress, badgeAddress } from "../config";
-import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
+import { nftAddress, gameAddress, badgeAddress } from "../config";
+import Game from "../artifacts/contracts/game.sol/Game.json";
 import Contract from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import Badge from "../artifacts/contracts/Badge.sol/Badge.json";
 import Web3Modal from "web3modal";
 import axios from "axios";
 import Trophy from "../components/trophy";
+import { useRouter } from "next/router";
 
 const Profile = () => {
   const [contracts, setContracts] = useState([]);
   const [playerData, setPlayerData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [badgeUrl, setBadgeUrl] = useState("");
+
+  const router = useRouter();
 
   useEffect(() => {
     fetchMyPlayerData();
@@ -31,6 +43,8 @@ const Profile = () => {
     const badgeContract = new ethers.Contract(badgeAddress, Badge.abi, signer);
 
     await badgeContract.claim();
+    fetchBadge();
+    router.reload();
   }
 
   async function fetchBadge() {
@@ -47,7 +61,6 @@ const Profile = () => {
     if (balance > 0) {
       const tokenURI = await tokenContract.fetchMyBadge();
       const meta = await axios.get(tokenURI);
-      console.log(meta);
       setBadgeUrl(meta.data);
     }
   }
@@ -59,12 +72,8 @@ const Profile = () => {
     const signer = provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    const daoContract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      signer
-    );
-    const data = await daoContract.fetchPlayerData(signerAddress);
+    const gameContract = new ethers.Contract(gameAddress, Game.abi, signer);
+    const data = await gameContract.fetchPlayerData(signerAddress);
     setPlayerData(data);
   }
 
@@ -79,12 +88,8 @@ const Profile = () => {
       Contract.abi,
       provider
     );
-    const daoContract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      signer
-    );
-    const data = await daoContract.fetchMyContracts();
+    const gameContract = new ethers.Contract(gameAddress, Game.abi, signer);
+    const data = await gameContract.fetchMyContracts();
 
     const _contracts = await Promise.all(
       data.map(async (i) => {
@@ -110,28 +115,50 @@ const Profile = () => {
 
   return (
     <Box>
-      <Heading>My Statistics</Heading>
-      {isLoading == false && playerData.playerAddress ? (
-        <Box>
-          <p>Contracts completed: {playerData.contractsCompleted.toString()}</p>
-          <p>
-            Total rewards earned:{" "}
-            {playerData.totalRewardsEarned.toString().slice(0, -18)}
-          </p>
-          <p>Amount of contracts to complete until next promotion: </p>
-          {badgeUrl == "" ? (
-            <Button onClick={claimBadge}> Claim Badge</Button>
-          ) : (
-            ""
-          )}
-          <Text>My badge</Text>
-          <Image src={badgeUrl.image} w="150px" />
-        </Box>
-      ) : (
-        ""
-      )}
-      <Stack alignItems="center" p={5}>
-        <Heading size="md">My Trophies</Heading>
+      <Stack
+        display="flex"
+        direction="column"
+        my={5}
+        rounded="10px"
+        bg="whiteAlpha.600"
+        p={5}
+      >
+        <Heading alignSelf="center">My Profile</Heading>
+        {isLoading == false && playerData.playerAddress ? (
+          <Flex direction="row" alignItems="center" justifyContent="justify">
+            <Box>
+              <Text>
+                Contracts completed: {playerData.contractsCompleted.toString()}
+              </Text>
+              <Text>
+                Total rewards earned:{" "}
+                {playerData.totalRewardsEarned.toString().slice(0, -18)}
+              </Text>
+            </Box>
+            <Spacer />
+            <Stack direction="column" alignItems="center">
+              {badgeUrl == "" ? (
+                <Button onClick={claimBadge}> Claim Badge</Button>
+                ) : (
+                  <Stack direction="column" alignItems="center">
+                <Text>{badgeUrl.level}</Text>
+                <Image src={badgeUrl.image} w="150px" />
+                </Stack>
+              )}
+            </Stack>
+          </Flex>
+        ) : (
+          ""
+        )}
+      </Stack>
+      <Stack
+        alignItems="center"
+        p={5}
+        my={5}
+        rounded="10px"
+        bg="whiteAlpha.600"
+      >
+        <Heading size="md">Trophies</Heading>
         <Stack direction="row" spacing={3} p={5}>
           {isLoading == false && contracts.length > 0
             ? contracts.map((contract) => {

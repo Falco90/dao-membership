@@ -2,8 +2,8 @@ import { Box, Heading, Button, Text, Stack } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { daoAddress, nftAddress } from "../config";
-import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
+import { gameAddress, nftAddress } from "../config";
+import Game from "../artifacts/contracts/game.sol/Game.json";
 import Contract from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import Card from "../components/card";
 import Leaderboard from "../components/leaderboard";
@@ -21,12 +21,8 @@ export default function Home() {
 
   async function fetchPlayers() {
     const provider = new ethers.providers.JsonRpcProvider();
-    const daoContract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      provider
-    );
-    const data = await daoContract.fetchPlayers();
+    const gameContract = new ethers.Contract(gameAddress, Game.abi, provider);
+    const data = await gameContract.fetchPlayers();
     const _players = data.map((p) => {
       let player = {
         id: p.playerId.toNumber(),
@@ -49,12 +45,8 @@ export default function Home() {
       Contract.abi,
       provider
     );
-    const daoContract = new ethers.Contract(
-      daoAddress,
-      BountyHunterDAO.abi,
-      provider
-    );
-    const data = await daoContract.fetchContracts();
+    const gameContract = new ethers.Contract(gameAddress, Game.abi, provider);
+    const data = await gameContract.fetchContracts();
 
     const _contracts = await Promise.all(
       data.map(async (i) => {
