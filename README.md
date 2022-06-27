@@ -10,4 +10,4 @@ Create a local node by running npx hardhat node
 Run the deploy script by running npx hardhat run scripts/deploy.js --network localhost
 Start the front-end by running npm run dev
 
-Make sure to reset the Metamask account connected to localhost every time the hardhat node is rebooted
+Make sure to reset the Metamask account connected to localhost every time the hardhat node is rebooted.
