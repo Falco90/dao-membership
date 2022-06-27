@@ -1,15 +1,13 @@
-# Basic Sample Hardhat Project
+# Space Cownboys
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+In this example a sheriff can reward bounties to players who capture wanted criminals. The sheriff can create NFT's of the suspects which will be added as "Wanted" posters to the active contracts list. When a player completes the contract they will receive the NFT as a trophy along with bounty in Bounty Hunter Tokens (BHT). After completion of the first contract a player can claim their badge, which is a dynamic NFT. Afer completing certain milestones (set by the deployer of the game contract), the badge will upgrade (bronze, silver, gold), and the player will receive a bonus in Bounty Hunter Tokens. A leaderboard keeps track of which bounty hunter has completed most contracts and earned the most rewards.
 
-Try running some of the following tasks:
+The mechanics demonstrated in this project can be applied to other settings as well, for example within DAO's to reward member participation. 
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+-Instructions to run on localhost:
+
+Create a local node by running npx hardhat node
+Run the deploy script by running npx hardhat run scripts/deploy.js --network localhost
+Start the front-end by running npm run dev
+
+Make sure to reset the Metamask account connected to localhost every time the hardhat node is rebooted

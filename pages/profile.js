@@ -15,7 +15,6 @@ const Profile = () => {
   const [playerData, setPlayerData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [badgeUrl, setBadgeUrl] = useState("");
-  const [hasBadge, setHasbadge] = useState(false);
 
   useEffect(() => {
     fetchMyPlayerData();
@@ -31,7 +30,7 @@ const Profile = () => {
 
     const badgeContract = new ethers.Contract(badgeAddress, Badge.abi, signer);
 
-    const data = await badgeContract.claim();
+    await badgeContract.claim();
   }
 
   async function fetchBadge() {
@@ -45,14 +44,12 @@ const Profile = () => {
 
     const balance = await tokenContract.balanceOf(address);
     
-    if (balance >= 0) {
-      setHasbadge(true);
+    if (balance > 0) {
+      const tokenURI = await tokenContract.fetchMyBadge();
+      const meta = await axios.get(tokenURI);
+      console.log(meta);
+      setBadgeUrl(meta.data);
     }
-
-    const tokenURI = await tokenContract.fetchMyBadge();
-    const meta = await axios.get(tokenURI);
-    console.log(meta);
-    setBadgeUrl(meta.data);
   }
 
   async function fetchMyPlayerData() {
@@ -108,21 +105,22 @@ const Profile = () => {
       })
     );
     setContracts(_contracts);
-    console.log(contracts);
     setIsLoading(false);
   }
 
   return (
     <Box>
       <Heading>My Statistics</Heading>
-      {isLoading == false && playerData ? (
+      {isLoading == false && playerData.playerAddress ? (
         <Box>
           <p>Contracts completed: {playerData.contractsCompleted.toString()}</p>
           <p>
             Total rewards earned: {playerData.totalRewardsEarned.toString().slice(0, -18)}
           </p>
           <p>Amount of contracts to complete until next promotion: </p>
+          {badgeUrl == "" ? (
           <Button onClick={claimBadge}> Claim Badge</Button>
+          ) : ""}
           <Image src={badgeUrl.image} />
 
         </Box>
@@ -130,7 +128,7 @@ const Profile = () => {
         ""
       )}
       <Stack alignItems="center" p={5}>
-        <Heading size="md">My trophy's</Heading>
+        <Heading size="md">My Trophies</Heading>
         <Stack direction="row" spacing={3} p={5}>
           {isLoading == false && contracts.length > 0
             ? contracts.map((contract) => {

@@ -16,7 +16,7 @@ import {
 import { ethers } from "ethers";
 import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
 import NFT from "../artifacts/contracts/Contract.sol/Contract.json";
-import ERC20 from "../artifacts/contracts/ERC20.sol/MyToken.json";
+import ERC20 from "../artifacts/contracts/ERC20.sol/BountyHunterToken.json";
 import Web3Modal from "web3modal";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";

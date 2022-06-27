@@ -23,21 +23,21 @@ async function main() {
 
   await dao.deployed();
 
-  console.log("Bounty Hunter DAO deployed to:", dao.address);
+  console.log("Game contract deployed to:", dao.address);
 
   const NFT = await hre.ethers.getContractFactory("Contract");
   const nft = await NFT.deploy(dao.address);
 
   await nft.deployed();
 
-  console.log("NFT deployed to: ", nft.address);
+  console.log("NFT contract deployed to: ", nft.address);
 
-  const ERC20 = await hre.ethers.getContractFactory("MyToken");
+  const ERC20 = await hre.ethers.getContractFactory("BountyHunterToken");
   const erc20 = await ERC20.deploy(dao.address);
 
   await erc20.deployed();
 
-  console.log("Contract ERC20 deployed to:", erc20.address);
+  console.log("ERC20 contract deployed to:", erc20.address);
 
   const Badge = await hre.ethers.getContractFactory("Badge");
   const badge = await Badge.deploy(dao.address, [
@@ -47,7 +47,7 @@ async function main() {
 
   await badge.deployed();
 
-  console.log("Badge deployed to: ", badge.address);
+  console.log("Badge contract deployed to: ", badge.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

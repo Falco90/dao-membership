@@ -8,9 +8,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
-interface IDaoContractInterface {
+interface IGame {
     function fetchPlayerData(address) external view returns (Player memory);
-
     function fetchPromotions() external view returns (Promotion[] memory);
 }
 
@@ -29,13 +28,13 @@ struct Promotion {
 contract Badge is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private tokenIds;
-    address contractAddress;
+    address gameAddress;
     string[] tokenURIs;
 
-    constructor(address _contractAddress, string[] memory _tokenURIs)
+    constructor(address _gameAddress, string[] memory _tokenURIs)
         ERC721("Badge", "BADGE")
     {
-        contractAddress = _contractAddress;
+        gameAddress = _gameAddress;
         tokenURIs = _tokenURIs;
     }
 
@@ -43,40 +42,33 @@ contract Badge is ERC721URIStorage, Ownable {
 
     function claim() public {
         require(balanceOf(msg.sender) == 0, "A player can only mint one badge");
-        Player memory player = IDaoContractInterface(contractAddress)
+        Player memory player = IGame(gameAddress)
             .fetchPlayerData(msg.sender);
 
-        console.log(
-            player.playerId,
-            player.contractsCompleted,
-            player.totalRewardsEarned
-        );
         require(
             player.contractsCompleted >= 1,
             "A player must atleast complete one contract to earn a badge"
         );
         tokenIds.increment();
-        uint256 newItemId = tokenIds.current();
-        _mint(msg.sender, newItemId);
-        addressToTokenId[msg.sender] = newItemId;
-        _setTokenURI(newItemId, tokenURIs[0]);
+        uint256 newTokenId = tokenIds.current();
+        _mint(msg.sender, newTokenId);
+        addressToTokenId[msg.sender] = newTokenId;
+        _setTokenURI(newTokenId, tokenURIs[0]);
     }
 
     function fetchMyBadge() public view returns (string memory) {
-        require(balanceOf(msg.sender) >= 1, "Must own a badge");
         uint256 tokenId = addressToTokenId[msg.sender];
         return tokenURI(tokenId);
     }
 
     function updateTokenURI(address _player, uint256 _index) public {
-        uint256 contractsCompleted = IDaoContractInterface(contractAddress)
+        uint256 contractsCompleted = IGame(gameAddress)
             .fetchPlayerData(_player)
             .contractsCompleted;
-        uint256 contractsRequired = IDaoContractInterface(contractAddress)
+        uint256 contractsRequired = IGame(gameAddress)
         .fetchPromotions()[_index].contractsRequired;
         require(contractsCompleted >= contractsRequired);
         uint256 tokenId = addressToTokenId[_player];
         _setTokenURI(tokenId, tokenURIs[_index]);
-        console.log("Latest tokenURI: ", tokenURI(tokenId));
     }
 }

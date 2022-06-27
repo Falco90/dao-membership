@@ -99,7 +99,7 @@ contract BountyHunterDAO is ReentrancyGuard {
             _reward,
             false,
             address(0),
-            address(msg.sender)
+            address(address(this))
         );
 
         IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
@@ -111,7 +111,7 @@ contract BountyHunterDAO is ReentrancyGuard {
             _reward,
             false,
             address(0),
-            msg.sender
+            address(this)
         );
     }
 

@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import { nftAddress, daoAddress, erc20Address, badgeAddress } from "../../config";
 import BountyHunterDAO from "../../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
-import Badge from "../../artifacts/contracts/Badge.sol/Badge.json";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 

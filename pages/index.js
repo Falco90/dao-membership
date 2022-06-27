@@ -1,12 +1,9 @@
 import {
-  Container,
   Box,
   Heading,
   Button,
   Text,
   Stack,
-  OrderedList,
-  ListItem,
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
@@ -22,10 +19,8 @@ export default function Home() {
   const [contracts, setContracts] = useState([]);
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [sheriff, setSheriff] = useState("");
 
   useEffect(() => {
-    // fetchSheriff();
     fetchContracts();
     fetchPlayers();
   }, []);
@@ -38,7 +33,6 @@ export default function Home() {
       provider
     );
     const data = await daoContract.fetchPlayers();
-    console.log(data);
     const _players = data.map((p) => {
       let player = {
         id: p.playerId.toNumber(),
@@ -51,7 +45,6 @@ export default function Home() {
       };
       return player;
     });
-    console.log(_players);
     setPlayers(_players);
   }
 
@@ -68,7 +61,6 @@ export default function Home() {
       provider
     );
     const data = await daoContract.fetchContracts();
-    console.log(data);
 
     const _contracts = await Promise.all(
       data.map(async (i) => {
@@ -89,7 +81,6 @@ export default function Home() {
       })
     );
     setContracts(_contracts);
-    console.log(contracts);
     setIsLoading(false);
   }
 
