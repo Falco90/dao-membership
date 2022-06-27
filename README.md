@@ -16,6 +16,3 @@ The mechanics demonstrated in this project can be applied to other settings as w
 2. Player completes contracts from the list and gets trophy and erc20 tokens
 3. After completing the first contract the player can claim their badge
 4. After reaching certain milestones the badge gets upgraded and player receives bonuses
-
-#### Disclaimer:
-Placeholder badge images used are created by Skylark1952, downloaded from freepik.com (https://www.freepik.com/author/skylark1952). These images are used for demonstration/testing purposes during development only.
