@@ -131,11 +131,11 @@ const Profile = () => {
                 Contracts completed: {playerData.contractsCompleted.toString()}
               </Text>
               <Text>
-                Total rewards earned:{" "}
-                {playerData.totalRewardsEarned.toString().slice(0, -18)}
+                Total rewards earned: ${playerData.totalRewardsEarned.toString().slice(0, -18)}
               </Text>
             </Box>
             <Spacer />
+            {playerData.contractsCompleted > 0? (
             <Stack direction="column" alignItems="center">
               {badgeUrl == "" ? (
                 <Button onClick={claimBadge}> Claim Badge</Button>
@@ -146,6 +146,8 @@ const Profile = () => {
                 </Stack>
               )}
             </Stack>
+            ) : ""
+                }
           </Flex>
         ) : (
           ""
@@ -179,7 +181,7 @@ const Profile = () => {
                   </Link>
                 );
               })
-            : "No contracts completed yet"}
+            : <Text>Complete contracts to earn trophies</Text>}
         </Stack>
       </Stack>
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Heading, Stack, Wrap, WrapItem } from "@chakra-ui/react";
+import { Box, Heading, Stack, Wrap, WrapItem, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ethers } from "ethers";
@@ -118,9 +118,9 @@ const AllContracts = () => {
                 );
               })}
             </Wrap>
-          ) : (
-            "No Active Contracts"
-          )}
+          ) : 
+            <Text>No Active Contracts</Text>
+          }
         </Stack>
       </Stack>
       <Stack
@@ -157,9 +157,9 @@ const AllContracts = () => {
                 );
               })}
             </Wrap>
-          ) : (
-            "No contracts completed yet"
-          )}
+          ) : 
+            <Text>No contracts completed yet</Text>
+          }
         </Stack>
       </Stack>
     </Box>

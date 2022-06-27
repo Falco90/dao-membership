@@ -96,27 +96,29 @@ export default function Home() {
           Latest Contracts
         </Heading>
         <Stack direction="row" spacing={3} my={5}>
-          {isLoading == false && contracts.length > 0
-            ? contracts.slice(-4).map((contract) => {
-                return (
-                  <Link
-                    href={{
-                      pathname: "/contracts/" + contract.tokenId,
-                      query: contract,
-                    }}
-                    passHref
-                    key={contract.tokenId}
-                  >
-                    <Card
-                      name={contract.name}
-                      reward={contract.reward}
-                      image={contract.image}
-                      completed={contract.completed}
-                    ></Card>
-                  </Link>
-                );
-              })
-            : "No Active Contracts"}
+          {isLoading == false && contracts.length > 0 ? (
+            contracts.slice(-4).map((contract) => {
+              return (
+                <Link
+                  href={{
+                    pathname: "/contracts/" + contract.tokenId,
+                    query: contract,
+                  }}
+                  passHref
+                  key={contract.tokenId}
+                >
+                  <Card
+                    name={contract.name}
+                    reward={contract.reward}
+                    image={contract.image}
+                    completed={contract.completed}
+                  ></Card>
+                </Link>
+              );
+            })
+          ) : (
+            <Text>No Active Contracts</Text>
+          )}
         </Stack>
         <Link href={"/contracts"}>
           <Button bg="orange">All Contracts</Button>
