@@ -4,13 +4,13 @@ In this example a sheriff can reward bounties to players who capture wanted crim
 
 The mechanics demonstrated in this project can be applied to other settings as well, for example within DAO's to reward member participation.
 
-# Instructions to run on localhost:
+## Instructions to run on localhost:
 
-1. npx hardhat node
-2. npx hardhat run scripts/deploy.js --network localhost
-3. npm run dev
+1.      npx hardhat node
+2.      npx hardhat run scripts/deploy.js --network localhost
+3.      npm run dev
 
-# General Flow
+## General Flow
 
 1. Deployer of the contract goes to the "/admin" route to create new contracts and add them to the list
 2. Player completes contracts from the list and gets trophy and erc20 tokens
