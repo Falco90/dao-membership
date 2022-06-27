@@ -4,10 +4,8 @@ In this example a sheriff can reward bounties to players who capture wanted crim
 
 The mechanics demonstrated in this project can be applied to other settings as well, for example within DAO's to reward member participation.
 
--Instructions to run on localhost:
+# Instructions to run on localhost:
 
-Create a local node by running npx hardhat node
-Run the deploy script by running npx hardhat run scripts/deploy.js --network localhost
-Start the front-end by running npm run dev
-
-Make sure to reset the Metamask account connected to localhost every time the hardhat node is rebooted.
+1. npx hardhat node
+2. npx hardhat run scripts/deploy.js --network localhost
+3. npm run dev
