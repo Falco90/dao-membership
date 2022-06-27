@@ -25,12 +25,12 @@ async function main() {
 
   console.log("Game contract deployed to:", game.address);
 
-  const NFT = await hre.ethers.getContractFactory("Trophy");
-  const nft = await NFT.deploy(game.address);
+  const Trophy = await hre.ethers.getContractFactory("Trophy");
+  const trophy = await Trophy.deploy(game.address);
 
-  await nft.deployed();
+  await trophy.deployed();
 
-  console.log("NFT contract deployed to: ", nft.address);
+  console.log("Trophy NFT contract deployed to: ", nft.address);
 
   const ERC20 = await hre.ethers.getContractFactory("BountyHunterToken");
   const erc20 = await ERC20.deploy(game.address);
@@ -48,7 +48,7 @@ async function main() {
 
   await badge.deployed();
 
-  console.log("Badge contract deployed to: ", badge.address);
+  console.log("Badge NFT contract deployed to: ", badge.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

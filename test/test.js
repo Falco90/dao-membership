@@ -11,10 +11,10 @@ describe("Bounty Hunter Game", function () {
     await game.deployed();
     const gameContractAddress = game.address;
 
-    const NFT = await ethers.getContractFactory("Contract");
-    const nft = await NFT.deploy(gameContractAddress);
-    await nft.deployed();
-    const nftContractAddress = nft.address;
+    const Trophy = await ethers.getContractFactory("Trophy");
+    const trophy = await Trophy.deploy(gameContractAddress);
+    await trophy.deployed();
+    const trophyContractAddress = trophy.address;
 
     const ERC20 = await ethers.getContractFactory("BountyHunterToken");
     const erc20 = await ERC20.deploy(gameContractAddress);
@@ -30,23 +30,23 @@ describe("Bounty Hunter Game", function () {
     const badgeContractAddress = badge.address;
 
     let reward = ethers.utils.parseUnits("1000", "ether");
-    await nft.createToken(
+    await trophy.createToken(
       "https://bafybeigki5qc5u2l6rjtv2btsasxaxzwo3dx26d4b5d523u27a5mtgqqeu.ipfs.infura-ipfs.io/"
     );
-    await game.createContract(nftContractAddress, 1, reward);
+    await game.createContract(trophyContractAddress, 1, reward);
 
     reward = ethers.utils.parseUnits("2000", "ether");
-    await nft.createToken(
+    await trophy.createToken(
       "https://bafybeiaaoqhaccuefvh5rke7zypfwd3oc4er2wrnckeg4naicpjrakyy3m.ipfs.infura-ipfs.io/"
     );
-    await game.createContract(nftContractAddress, 2, reward);
+    await game.createContract(trophyContractAddress, 2, reward);
 
     const [_, playerAddress] = await ethers.getSigners();
 
     await game
       .connect(playerAddress)
       .completeContract(
-        nftContractAddress,
+        trophyContractAddress,
         1,
         erc20ContractAddress,
         badgeContractAddress
@@ -56,7 +56,7 @@ describe("Bounty Hunter Game", function () {
 
     activeContracts = await Promise.all(
       activeContracts.map(async (c) => {
-        const tokenURI = await nft.tokenURI(c.tokenId);
+        const tokenURI = await trophy.tokenURI(c.tokenId);
         let contract = {
           tokenId: c.tokenId,
           reward: c.reward,
@@ -73,7 +73,7 @@ describe("Bounty Hunter Game", function () {
 
     completedContracts = await Promise.all(
       completedContracts.map(async (c) => {
-        const tokenURI = await nft.tokenURI(c.tokenId);
+        const tokenURI = await trophy.tokenURI(c.tokenId);
         let contract = {
           tokenId: c.tokenId,
           reward: c.reward,
@@ -89,7 +89,7 @@ describe("Bounty Hunter Game", function () {
     await badge.connect(playerAddress).claim();
 
     const erc20Balance = await erc20.balanceOf(playerAddress.address);
-    const trophyBalance = await nft.balanceOf(playerAddress.address);
+    const trophyBalance = await trophy.balanceOf(playerAddress.address);
     const badgeBalance = await badge.balanceOf(playerAddress.address);
     console.log("Active contracts: ", activeContracts);
     console.log("Completed contracts: ", completedContracts);
