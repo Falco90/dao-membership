@@ -1,16 +1,10 @@
-import {
-  Box,
-  Heading,
-  Button,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Heading, Button, Text, Stack } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { daoAddress, nftAddress } from "../config";
 import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
-import Contract from "../artifacts/contracts/Contract.sol/Contract.json";
+import Contract from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import Card from "../components/card";
 import Leaderboard from "../components/leaderboard";
 import Link from "next/link";

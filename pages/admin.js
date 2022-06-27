@@ -11,11 +11,11 @@ import {
   InputGroup,
   Textarea,
   Image,
-  Heading
+  Heading,
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
-import NFT from "../artifacts/contracts/Contract.sol/Contract.json";
+import NFT from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import ERC20 from "../artifacts/contracts/ERC20.sol/BountyHunterToken.json";
 import Web3Modal from "web3modal";
 import { create as ipfsHttpClient } from "ipfs-http-client";
@@ -115,7 +115,9 @@ const Admin = () => {
   return (
     <Container>
       <Heading>Sheriff's office</Heading>
-      <Heading size="md">Treasury: {balance ? balance.toString().slice(0, -18) : ""}</Heading>
+      <Heading size="md">
+        Treasury: {balance ? balance.toString().slice(0, -18) : ""}
+      </Heading>
       <Stack spacing={3} mt={5}>
         <FormLabel>Create Contract</FormLabel>
         <Input

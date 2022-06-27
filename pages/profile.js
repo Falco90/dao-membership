@@ -1,10 +1,10 @@
-import { Box, Heading, Stack, Button, Image } from "@chakra-ui/react";
+import { Box, Heading, Stack, Button, Image, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ethers } from "ethers";
 import { nftAddress, daoAddress, badgeAddress } from "../config";
 import BountyHunterDAO from "../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
-import Contract from "../artifacts/contracts/Contract.sol/Contract.json";
+import Contract from "../artifacts/contracts/Trophy.sol/Trophy.json";
 import Badge from "../artifacts/contracts/Badge.sol/Badge.json";
 import Web3Modal from "web3modal";
 import axios from "axios";
@@ -43,7 +43,7 @@ const Profile = () => {
     const tokenContract = new ethers.Contract(badgeAddress, Badge.abi, signer);
 
     const balance = await tokenContract.balanceOf(address);
-    
+
     if (balance > 0) {
       const tokenURI = await tokenContract.fetchMyBadge();
       const meta = await axios.get(tokenURI);
@@ -115,14 +115,17 @@ const Profile = () => {
         <Box>
           <p>Contracts completed: {playerData.contractsCompleted.toString()}</p>
           <p>
-            Total rewards earned: {playerData.totalRewardsEarned.toString().slice(0, -18)}
+            Total rewards earned:{" "}
+            {playerData.totalRewardsEarned.toString().slice(0, -18)}
           </p>
           <p>Amount of contracts to complete until next promotion: </p>
           {badgeUrl == "" ? (
-          <Button onClick={claimBadge}> Claim Badge</Button>
-          ) : ""}
-          <Image src={badgeUrl.image} />
-
+            <Button onClick={claimBadge}> Claim Badge</Button>
+          ) : (
+            ""
+          )}
+          <Text>My badge</Text>
+          <Image src={badgeUrl.image} w="150px" />
         </Box>
       ) : (
         ""

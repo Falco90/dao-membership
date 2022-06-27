@@ -9,14 +9,14 @@ import {
   Td,
   Thead,
   Tbody,
-  Button
+  Button,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ethers } from "ethers";
 import { nftAddress, daoAddress } from "../../config";
 import BountyHunterDAO from "../../artifacts/contracts/DAO.sol/BountyHunterDAO.json";
-import Contract from "../../artifacts/contracts/Contract.sol/Contract.json";
+import Contract from "../../artifacts/contracts/Trophy.sol/Trophy.json";
 import axios from "axios";
 import Card from "../../components/card";
 
@@ -129,30 +129,30 @@ const AllContracts = () => {
           : "No contracts completed yet"}
       </Stack>
       <Box mt={5}>
-      <Heading size="md">Completed Contracts</Heading>
-      <Stack direction="row" spacing={3}>
-        {completedContracts.length > 0
-          ? activeContracts.map((contract) => {
-              return (
-                <Link
-                  href={{
-                    pathname: "/contracts/" + contract.tokenId,
-                    query: contract,
-                  }}
-                  passHref
-                  key={contract.tokenId}
-                >
-                  <Card
-                    name={contract.name}
-                    reward={contract.reward}
-                    image={contract.image}
-                    completed={contract.completed}
-                  ></Card>
-                </Link>
-              );
-            })
-          : "No contracts completed yet"}
-      </Stack>
+        <Heading size="md">Completed Contracts</Heading>
+        <Stack direction="row" spacing={3}>
+          {completedContracts.length > 0
+            ? completedContracts.map((contract) => {
+                return (
+                  <Link
+                    href={{
+                      pathname: "/contracts/" + contract.tokenId,
+                      query: contract,
+                    }}
+                    passHref
+                    key={contract.tokenId}
+                  >
+                    <Card
+                      name={contract.name}
+                      reward={contract.reward}
+                      image={contract.image}
+                      completed={contract.completed}
+                    ></Card>
+                  </Link>
+                );
+              })
+            : "No contracts completed yet"}
+        </Stack>
       </Box>
     </Box>
   );

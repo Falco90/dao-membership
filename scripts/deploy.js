@@ -25,7 +25,7 @@ async function main() {
 
   console.log("Game contract deployed to:", dao.address);
 
-  const NFT = await hre.ethers.getContractFactory("Contract");
+  const NFT = await hre.ethers.getContractFactory("Trophy");
   const nft = await NFT.deploy(dao.address);
 
   await nft.deployed();
