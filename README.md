@@ -9,3 +9,10 @@ The mechanics demonstrated in this project can be applied to other settings as w
 1. npx hardhat node
 2. npx hardhat run scripts/deploy.js --network localhost
 3. npm run dev
+
+# General Flow
+
+1. Deployer of the contract goes to the "/admin" route to create new contracts and add them to the list
+2. Player completes contracts from the list and gets trophy and erc20 tokens
+3. After completing the first contract the player can claim their badge
+4. After reaching certain milestones the badge gets upgraded and player receives bonuses
