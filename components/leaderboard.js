@@ -6,7 +6,7 @@ const Leaderboard = (props) => {
 
     return (
         <Stack alignItems="center" p={5}>
-        <Heading size="md">Bounty Hunter Leaderboard</Heading>
+        <Heading size="md">Leaderboard</Heading>
         <Stack direction="row" spacing={14}>
           <Stack direction="column" alignItems="center">
             <Text>Contracts Completed</Text>

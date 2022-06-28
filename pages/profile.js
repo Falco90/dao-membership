@@ -123,7 +123,7 @@ const Profile = () => {
         bg="whiteAlpha.600"
         p={5}
       >
-        <Heading alignSelf="center">My Profile</Heading>
+        <Heading size="md" alignSelf="center">{isLoading == false && playerData.playerAddress ? playerData.playerAddress : "My Profile"}</Heading>
         {isLoading == false && playerData.playerAddress ? (
           <Flex direction="row" alignItems="center" justifyContent="justify">
             <Box>

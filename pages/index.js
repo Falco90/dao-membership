@@ -73,16 +73,16 @@ export default function Home() {
   return (
     <Box>
       <Box my={5} rounded="10px" bg="whiteAlpha.600" p={5}>
-        <Heading as="h2" size="md">
-          Calling all bounty hunters,
+        <Heading size="md">
+        Calling all bounty hunters, 
         </Heading>
-        <Text>
+        <Text size="md">
           <br></br>
-          Let's keep the galaxy a safe place. Become a bounty hunter and you'll
+Let's keep the galaxy a safe place. Become a bounty hunter and you'll
           be rewarded handsomely. Report back to me for your bounty when you've
           captured one of the targets below.
           <br></br>
-          <br></br> The Sheriff
+          <br></br> <Heading size="md">The Sheriff</Heading>
         </Text>
       </Box>
       <Stack
