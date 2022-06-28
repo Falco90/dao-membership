@@ -113,13 +113,13 @@ const Admin = () => {
   }
 
   return (
-    <Container>
-      <Heading>Sheriff's office</Heading>
+    <Stack alignItems="center"mt={5}>
+      <Heading size="lg">Sheriff's office</Heading>
       <Heading size="md">
-        Treasury: {balance ? balance.toString().slice(0, -18) : ""}
+        Treasury: ${balance ? balance.toString().slice(0, -18) : ""}
       </Heading>
       <Stack spacing={3} mt={5}>
-        <FormLabel>Create Contract</FormLabel>
+        <Heading size="md">Create Contract</Heading>
         <Input
           placeholder="Target Name"
           value={formInput.name}
@@ -153,7 +153,7 @@ const Admin = () => {
           Create Contract
         </Button>
       </Stack>
-    </Container>
+    </Stack>
   );
 };
 

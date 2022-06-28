@@ -55,7 +55,7 @@ const ContractDetails = () => {
       <TableContainer>
         <Table>
           <Thead>
-            <Th>TARGET DETAILS</Th>
+            <Th color="black" size="md">TARGET DETAILS</Th>
             <Th></Th>
           </Thead>
           <Tbody>
@@ -64,8 +64,12 @@ const ContractDetails = () => {
               <Td>{currentContract.name}</Td>
             </Tr>
             <Tr>
+              <Td>Description:</Td>
+              <Td>{currentContract.description}</Td>
+            </Tr>
+            <Tr>
               <Td>Reward:</Td>
-              <Td>{currentContract.reward}</Td>
+              <Td>${currentContract.reward * 1}</Td>
             </Tr>
             <Tr>
               <Td>Status:</Td>
