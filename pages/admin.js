@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import {
-  Container,
   Input,
   Stack,
   NumberInput,
   NumberInputField,
-  FormLabel,
   Button,
   InputLeftAddon,
   InputGroup,
   Textarea,
   Image,
   Heading,
+  Text
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import Game from "../artifacts/contracts/game.sol/Game.json";
@@ -114,11 +113,17 @@ const Admin = () => {
 
   return (
     <Stack alignItems="center"mt={5}>
-      <Heading size="lg">Sheriff's office</Heading>
-      <Heading size="md">
+      <Stack         p={5}
+        mb={5}
+        alignItems="center"
+        rounded="10px"
+        bg="whiteAlpha.600" w="60%">
+      <Heading size="md">Sheriff's Office</Heading>
+      <Text size="md">
         Treasury: ${balance ? balance.toString().slice(0, -18) : ""}
-      </Heading>
-      <Stack spacing={3} mt={5}>
+      </Text>
+      </Stack>
+      <Stack spacing={3} mt={5} w="60%">
         <Heading size="md">Create Contract</Heading>
         <Input
           placeholder="Target Name"
