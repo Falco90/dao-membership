@@ -148,7 +148,7 @@ const Admin = () => {
           </NumberInput>
         </InputGroup>
         <Input type="file" name="Asset" onChange={onChange} />
-        {fileUrl && <Image src={fileUrl} />}
+        {fileUrl && <Image src={fileUrl} maxW="250px" />}
         <Button onClick={createContract} bg="orange">
           Create Contract
         </Button>
